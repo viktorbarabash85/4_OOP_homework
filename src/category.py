@@ -1,6 +1,6 @@
-# 14_2_homework
+# 15_1_homework
 
-from typing import List
+from typing import Any, List
 
 from src.product import Product
 
@@ -10,26 +10,37 @@ class Category:
     Класс для представления категории товаров.
     """
 
-    _name: str  # Защищенный атрибут названия категории (публичный через геттер)
-    _description: str  # Защищенный атрибут описания категории (публичный через геттер)
-    __products: List[Product]  # Приватный атрибут списка товаров (недоступен напрямую извне)
-    category_count: int = 0  # Счетчик созданных категорий
-    product_count: int = 0  # Общий счетчик товаров во всех категориях
+    _name: str  # Название категории.
+    _description: str  # Описание категории.
+    __products: List[Product]  # Список товаров (приватный).
+
+    category_count: int = 0
+    product_count: int = 0
 
     def __init__(self, name: str, description: str, products: List[Product]) -> None:
         """
-        Инициализация новой категории.
+        Инициализирует новую категорию.
+
         :param name: Название категории.
         :param description: Описание категории.
-        :param products: Список объектов Product, входящих в категорию.
+        :param products: Список объектов Product.
         """
         self._name = name
         self._description = description
-
-        # Копируем список, чтобы не ссылаться на внешний объект
+        # Копируем список, чтобы не изменять исходный.
         self.__products = products[:]
         Category.category_count += 1
         Category.product_count += len(products)
+
+    def __str__(self) -> str:
+        """
+        Возвращает строковое представление категории.
+
+        Формат: "Название категории, количество продуктов: X шт."
+        Где X – сумма количества всех товаров в категории.
+        """
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self._name}, количество продуктов: {total_quantity} шт."
 
     @property
     def name(self) -> str:
@@ -44,27 +55,31 @@ class Category:
     @property
     def products(self) -> str:
         """
-        Геттер для приватного списка товаров.
-        Возвращает строку, где каждый продукт представлен по шаблону:
-        "Название продукта, X руб. Остаток: X шт.\n"
-        (Это нужно для вывода пользователю в main.)
+        Геттер для списка товаров в категории.
+
+        Возвращает строку, где каждый товар представлен с помощью его __str__.
         """
-        result = ""
-        for product in self.__products:
-            result += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
-        return result
+        return "\n".join(str(product) for product in self.__products)
 
     def add_product(self, product: Product) -> None:
         """
-        Добавляет объект Product в приватный список товаров __products.
-        :param product: Объект Product, который необходимо добавить.
+        Добавляет продукт в категорию.
+
+        :param product: Объект Product.
         """
         self.__products.append(product)
         Category.product_count += 1
 
     def get_products_list(self) -> List[Product]:
         """
-        (Вспомогательный метод) Возвращает внутренний список товаров.
-        Используется для сохранения в JSON или для тестирования.
+        Возвращает внутренний список товаров.
+        Используется для сохранения в JSON или тестирования.
+
+        :return: Список объектов Product.
         """
         return self.__products
+
+    def __iter__(self) -> Any:
+        from src.category_iterator import CategoryIterator  # Ленивая загрузка (Lazy Import)
+
+        return CategoryIterator(self)  # Передаём всю категорию, а не список

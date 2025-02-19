@@ -5,6 +5,31 @@ import pytest
 from src.product import Product
 
 # ================================
+# tests 15_1_homework
+# ================================
+
+
+def test_product_str() -> None:
+    """Тест магического метода __str__"""
+    product = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
+    assert str(product) == "Iphone 15, 210000.0 руб. Остаток: 8 шт."
+
+
+def test_product_add() -> None:
+    """Тест магического метода __add__"""
+    product1 = Product("Samsung Galaxy S23 Ultra", "256GB", 180000.0, 5)
+    product2 = Product("Iphone 15", "512GB", 210000.0, 8)
+    assert product1 + product2 == (180000.0 * 5) + (210000.0 * 8)
+
+
+def test_product_add_zero() -> None:
+    """Тест __add__ с пустыми остатками"""
+    product1 = Product("Product A", "desc", 100.0, 0)
+    product2 = Product("Product B", "desc", 200.0, 0)
+    assert product1 + product2 == 0
+
+
+# ================================
 # tests 14_2_homework
 # ================================
 

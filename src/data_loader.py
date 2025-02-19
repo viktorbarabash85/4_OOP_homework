@@ -1,6 +1,10 @@
 """
-Расширенное дополнение к домашнему заданию 14_1_homework по взаимодействию пользователя с данными JSON
+Расширенное дополнение к домашнему заданию 14_1_homework
+c учетом изменений домашнего задания 15_1
+по взаимодействию пользователя с данными JSON
 """
+
+# 15_1_homework
 
 import json
 from pathlib import Path
@@ -16,8 +20,9 @@ def load_products_from_json(filepath: str = "data/products.json") -> List[Catego
     """
     Загружает товары и категории из JSON-файла и создает соответствующие объекты.
 
-    :param filepath: Путь к JSON-файлу. Если путь относительный, он считается относительно корня проекта.
+    :param filepath: Путь к JSON-файлу. Если путь относительный, считается относительно корня проекта.
     :return: Список объектов Category, созданных из данных JSON.
+    :raises FileNotFoundError: Если файл не найден.
     """
     p = Path(filepath)
     if not p.is_absolute():
@@ -29,8 +34,7 @@ def load_products_from_json(filepath: str = "data/products.json") -> List[Catego
     with p.open(encoding="utf-8") as file:
         data = json.load(file)
 
-    # Если загруженные данные являются словарем и содержат ключ "categories",
-    # то используем его значение (список категорий)
+    # Если данные представлены в виде словаря с ключом "categories", используем его значение.
     if isinstance(data, dict) and "categories" in data:
         data = data["categories"]
 
@@ -51,7 +55,7 @@ def save_products_to_json(categories: List[Category], filepath: str = "data/prod
     """
     Сохраняет список категорий и товаров в JSON-файл.
 
-    :param categories: Список категорий.
+    :param categories: Список объектов Category.
     :param filepath: Путь для сохранения файла.
     """
     p = Path(filepath)
@@ -64,7 +68,7 @@ def save_products_to_json(categories: List[Category], filepath: str = "data/prod
             {
                 "name": category.name,
                 "description": category.description,
-                # Используем вспомогательный метод get_products_list(), чтобы получить список объектов Product
+                # Используем метод get_products_list() для получения списка объектов Product
                 "products": [
                     {
                         "name": prod.name,
@@ -86,37 +90,45 @@ def export_products_to_file(
 ) -> None:
     """
     Экспортирует список категорий и товаров в указанный формат: txt, xlsx или docx.
-    Файл сохраняется в папку "doc" (в той же папке, где находится JSON) с именем base_filename + "_" + расширение.
+    Файл сохраняется в папку "data" в корневой директории проекта.
 
     :param categories: Список объектов Category.
-    :param output_format: Формат для экспорта ("txt", "xlsx", "docx").
+    :param output_format: Формат экспорта ("txt", "xlsx", "docx").
     :param base_filename: Базовое имя файла (без расширения).
     """
     output_format = output_format.lower()
-    # Определяем базовую папку для сохранения файлов — папка "data" в корневой директории проекта.
+    # Определяем базовую директорию для сохранения файлов
     base_dir = Path(__file__).resolve().parent.parent / "data"
-    base_dir.mkdir(exist_ok=True)  # Если папки "doc" нет, создаем её.
+    base_dir.mkdir(exist_ok=True)  # Создаем директорию, если она не существует
 
     if output_format == "txt":
         export_filename = base_dir / f"{base_filename}_.txt"
-        # Формируем строку с информацией по категориям и товарам
         content = ""
         for cat in categories:
-            content += f"Категория: {cat.name}\nОписание: {cat.description}\nТовары:\n{cat.products}\n\n"
+            content += f"Категория: {cat.name}\n"
+            content += f"Описание: {cat.description}\n"
+            content += "Товары:\n"
+            # Используем метод get_products_list() для получения списка объектов Product
+            for product in cat.get_products_list():
+                content += f"{str(product)}\n"
+            content += "\n" + "=" * 50 + "\n"
         with export_filename.open("w", encoding="utf-8") as f:
             f.write(content)
+
     elif output_format == "xlsx":
         export_filename = base_dir / f"{base_filename}_.xlsx"
-        wb = Workbook()  # Workbook — это объект рабочей книги (файл Excel)
-        ws = wb.active  # Worksheet — это объект рабочего листа (таблица в Excel)
+        wb = Workbook()  # Создаем рабочую книгу
+        ws = wb.active  # Получаем активный рабочий лист
+        if ws is None:
+            raise RuntimeError("Активный лист не найден!")
         ws.title = "Продукты"
-
         # Заголовки таблицы
         ws.append(["Категория", "Описание категории", "Название продукта", "Описание продукта", "Цена", "Количество"])
         for cat in categories:
             for prod in cat.get_products_list():
                 ws.append([cat.name, cat.description, prod.name, prod.description, prod.price, prod.quantity])
         wb.save(export_filename)
+
     elif output_format == "docx":
         try:
             from docx import Document
@@ -140,7 +152,7 @@ def export_products_to_file(
                 row_cells[1].text = prod.description
                 row_cells[2].text = str(prod.price)
                 row_cells[3].text = str(prod.quantity)
-            document.add_paragraph("")  # Пустая строка между категориями
+            document.add_paragraph("")  # Разделитель между категориями
         document.save(export_filename)
     else:
         print(f"Неподдерживаемый формат: {output_format}")

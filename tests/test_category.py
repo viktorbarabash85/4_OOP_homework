@@ -4,6 +4,22 @@ from src.category import Category
 from src.product import Product
 
 # ================================
+# tests 15_1_homework
+# ================================
+
+
+def test_category_str(category_items: "Category") -> None:
+    """Тест __str__ у Category"""
+    assert str(category_items) == "Смартфоны, количество продуктов: 13 шт."
+
+
+def test_category_empty_str() -> None:
+    """Тест __str__ для пустой категории"""
+    empty_category = Category("Ноутбуки", "Описание", [])
+    assert str(empty_category) == "Ноутбуки, количество продуктов: 0 шт."
+
+
+# ================================
 # tests 14_2_homework
 # ================================
 
