@@ -2,7 +2,63 @@ from typing import Any
 
 import pytest
 
+from src.lawn_grass import LawnGrass
 from src.product import Product
+from src.smartphone import Smartphone
+
+# ================================
+# tests 16_1_homework
+# ================================
+
+
+def test_product_is_subclass() -> None:
+    """
+    Проверяет, что классы Smartphone и LawnGrass являются подклассами Product.
+    """
+    assert issubclass(Smartphone, Product)
+    assert issubclass(LawnGrass, Product)
+
+
+def test_product_add_same_type() -> None:
+    """
+    Проверяет сложение двух объектов базового класса Product (созданных напрямую).
+    """
+    prod1: Product = Product("Продукт A", "Описание", 100.0, 2)
+    prod2: Product = Product("Продукт B", "Описание", 200.0, 3)
+    expected: float = (100.0 * 2) + (200.0 * 3)
+    assert prod1 + prod2 == expected
+
+
+def test_product_add_different_type() -> None:
+    """
+    Проверяет, что при попытке сложения объектов разных типов (например, Product и Smartphone)
+    выбрасывается TypeError.
+    """
+    prod: Product = Product("Продукт A", "Описание", 100.0, 2)
+    smartphone: Smartphone = Smartphone("Смартфон", "Описание", 300.0, 4, 90, "ModelX", 128, "Чёрный")
+    with pytest.raises(TypeError):
+        _ = prod + smartphone
+
+
+def test_product_add_smartphone() -> None:
+    """
+    Проверяет, что сложение двух объектов Smartphone возвращает корректную суммарную стоимость.
+    """
+    smartphone1: Smartphone = Smartphone("Смартфон 1", "Описание 1", 300.0, 4, 90, "ModelX", 128, "Чёрный")
+    smartphone2: Smartphone = Smartphone("Смартфон 2", "Описание 2", 500.0, 3, 85, "ModelY", 256, "Белый")
+    expected: float = (300.0 * 4) + (500.0 * 3)
+    assert smartphone1 + smartphone2 == expected
+
+
+def test_product_add_lawn_grass() -> None:
+    """
+    Проверяет, что сложение двух объектов LawnGrass возвращает корректную суммарную стоимость.
+    """
+    lawn1: LawnGrass = LawnGrass("Трава 1", "Описание", 50.0, 10, "Страна1", 5, "Зелёный")
+    lawn2: LawnGrass = LawnGrass("Трава 2", "Описание", 60.0, 5, "Страна2", 7, "Тёмно-зелёный")
+    expected: float = (50.0 * 10) + (60.0 * 5)
+    assert lawn1 + lawn2 == expected
+
 
 # ================================
 # tests 15_1_homework

@@ -43,33 +43,43 @@ class Product:
         Магический метод сложения. Возвращает общую стоимость всего количества обоих товаров.
         Суммируется произведение цены на количество для self и other_product.
 
+        Ограничение: складывать можно только объекты одного класса.
+
         :param other_product: Другой объект Product.
         :return: Суммарная стоимость товаров.
         :raises TypeError: Если other_product не является экземпляром Product.
         """
         if not isinstance(other_product, Product):
             raise TypeError("Сложение возможно только между объектами Product.")
+        if type(self) is not type(other_product):
+            raise TypeError("Сложение возможно только между объектами одного типа.")
         return (self.price * self.quantity) + (other_product.price * other_product.quantity)
 
     @property
     def name(self) -> str:
-        """Геттер для имени продукта."""
+        """
+        Геттер для имени продукта. Возвращает название продукта.
+        """
         return self._name
 
     @property
     def description(self) -> str:
-        """Геттер для описания продукта."""
+        """
+        Геттер для описания продукта. Возвращает описание продукта.
+        """
         return self._description
 
     @property
     def price(self) -> float:
-        """Геттер для цены продукта."""
+        """
+        Геттер для цены продукта. Возвращает цену продукта.
+        """
         return self.__price
 
     @price.setter
     def price(self, new_price: float) -> None:
         """
-        Сеттер для цены продукта.
+        Сеттер для цены продукта. Устанавливает новую цену продукта.
         Если новая цена меньше или равна нулю, выводит сообщение и не обновляет значение.
         Если новая цена ниже текущей, запрашивает подтверждение через input.
 

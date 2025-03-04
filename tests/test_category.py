@@ -1,7 +1,60 @@
 from typing import Any, List
 
+import pytest
+
 from src.category import Category
+from src.lawn_grass import LawnGrass
 from src.product import Product
+from src.smartphone import Smartphone
+
+# ================================
+# tests 16_1_homework
+# ================================
+
+
+def test_category_add_valid_product() -> None:
+    """
+    Тестирует, что метод add_product принимает объекты типа Product и его наследников,
+    а также корректно обновляет список товаров.
+    """
+    category: Category = Category("Тестовая категория", "Описание", [])
+    prod: Product = Product("Продукт A", "Описание", 100.0, 2)
+    smartphone: Smartphone = Smartphone("Смартфон", "Описание", 300.0, 4, 90, "ModelX", 128, "Чёрный")
+    lawn: LawnGrass = LawnGrass("Трава", "Описание", 50.0, 10, "Россия", 5, "Зелёный")
+
+    category.add_product(prod)
+    category.add_product(smartphone)
+    category.add_product(lawn)
+
+    products_list: List[Product] = category.get_products_list()
+    assert len(products_list) == 3
+    assert products_list[0] is prod
+    assert products_list[1] is smartphone
+    assert products_list[2] is lawn
+
+
+def test_category_add_invalid_product() -> None:
+    """
+    Проверяет, что при попытке добавить объект, не являющийся Product или его наследником,
+    метод add_product выбрасывает TypeError.
+    """
+    category: Category = Category("Тестовая категория", "Описание", [])
+    with pytest.raises(TypeError):
+        category.add_product("Не продукт")  # type: ignore
+
+
+def test_category_product_count_after_adding() -> None:
+    """
+    Проверяет, что после создания категории и добавления в неё продуктов счетчик product_count
+    обновляется корректно.
+    """
+    initial_count: int = Category.product_count
+    category: Category = Category("Тестовая категория", "Описание", [])
+    prod: Product = Product("Продукт A", "Описание", 100.0, 2)
+    category.add_product(prod)
+    # При создании пустой категории product_count не увеличивается, а при add_product – увеличивается на 1
+    assert Category.product_count == initial_count + 1
+
 
 # ================================
 # tests 15_1_homework

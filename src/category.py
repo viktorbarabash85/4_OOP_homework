@@ -44,18 +44,22 @@ class Category:
 
     @property
     def name(self) -> str:
-        """Геттер для имени категории."""
+        """
+        Геттер для имени категории. Возвращает название категории.
+        """
         return self._name
 
     @property
     def description(self) -> str:
-        """Геттер для описания категории."""
+        """
+        Геттер для описания категории. Возвращает описание категории.
+        """
         return self._description
 
     @property
     def products(self) -> str:
         """
-        Геттер для списка товаров в категории.
+        Геттер для списка товаров в категории. Возвращает строковое представление всех товаров категории.
 
         Возвращает строку, где каждый товар представлен с помощью его __str__.
         """
@@ -63,10 +67,14 @@ class Category:
 
     def add_product(self, product: Product) -> None:
         """
-        Добавляет продукт в категорию.
+        Добавляет продукт в категорию. Проверяет, что он является экземпляром Product или его наследником.
 
         :param product: Объект Product.
+        :raises TypeError: Если product не является допустимым объектом.
         """
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты типа Product или его наследников.")
+
         self.__products.append(product)
         Category.product_count += 1
 
