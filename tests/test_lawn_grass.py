@@ -27,7 +27,7 @@ def test_lawn_grass_initialization() -> None:
     assert lawn.price == 500.0
     assert lawn.quantity == 20
     assert lawn.country == "Россия"
-    assert lawn.germination_period == "7 дней"
+    assert lawn.germination_period == 7
     assert lawn.color == "Зелёный"
     # Строковое представление унаследовано от Product
     expected_str: str = "Газонная трава, 500.0 руб. Остаток: 20 шт."
