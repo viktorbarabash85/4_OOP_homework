@@ -5,13 +5,23 @@ class Smartphone(Product):
     """
     Класс-наследник класса Product для категории «Смартфон» (расширяется дополнительными свойствами).
     """
-    efficiency: int  # производительность
+
+    efficiency: float  # производительность
     model: str  # модель
-    memory: int  # объем встроенной памяти
+    memory: float  # объем встроенной памяти
     color: str  # цвет
 
-    def __init__(self, name: str, description: str, price: float, quantity: int,
-                 efficiency: int, model: str, memory: int, color: str) -> None:
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ) -> None:
         """
         Инициализирует новую категорию «Смартфон».
 

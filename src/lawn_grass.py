@@ -5,11 +5,21 @@ class LawnGrass(Product):
     """
     Класс-наследник класса Product для категории «Трава газонная» (расширяется дополнительными свойствами).
     """
+
     country: str  # страна-производитель
     germination_period: int  # срок прорастания
     color: str  # производительность
 
-    def __init__(self, name: str, description: str, price: float, quantity: int, country: str, germination_period: int, color: str):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+    ):
         """
         Инициализирует новую категорию «Трава газонная».
 

@@ -51,7 +51,7 @@ class Product:
         """
         if not isinstance(other_product, Product):
             raise TypeError("Сложение возможно только между объектами Product.")
-        if type(self) != type(other_product):
+        if type(self) is not type(other_product):
             raise TypeError("Сложение возможно только между объектами одного типа.")
         return (self.price * self.quantity) + (other_product.price * other_product.quantity)
 
